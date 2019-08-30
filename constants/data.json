@@ -1,0 +1,34 @@
+{
+    "TodoList": [
+        {
+            "id": 0,
+            "status": "Done",
+            "body": "Read Instructions"
+        },
+        {
+            "id": 1,
+            "status": "Done",
+            "body": "Read Some books"
+        },
+        {
+            "id": 2,
+            "status": "Done",
+            "body": "Play Video games"
+        },
+        {
+            "id": 3,
+            "status": "Active",
+            "body": "Punch Tu Doan in his face"
+        },
+        {
+            "id": 4,
+            "status": "Active",
+            "body": "Kick Tu Doan's ass"
+        },
+        {
+            "id": 5,
+            "status": "Active",
+            "body": "hit Tu Doan with a big stone in the head"
+        }
+    ]
+}

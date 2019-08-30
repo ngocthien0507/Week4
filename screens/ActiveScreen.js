@@ -1,30 +1,39 @@
 import React, { Component } from 'react';
 import { HeaderBackButton } from 'react-navigation';
-import { ImageBackground, ScrollView, StyleSheet , Text } from 'react-native';
-import { TODOS } from '../constants/Utils';
+import { ImageBackground, ScrollView, StyleSheet, Text } from 'react-native';
+import { db } from '../constants/db';
 import TodoItem from '../components/TodoItem';
-const FOLLOW_COLOR = 'rgb(33, 31, 110)';
-export default class TodoScreen extends Component {
-    static navigationOptions =({navigation}) =>({
+
+let itemsRef = db.ref('/TodoList');
+
+export default class ActiveScreen extends Component {
+    static navigationOptions = ({ navigation }) => ({
         headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
         title: 'Active List',
     });
     constructor(props) {
         super(props);
         this.state = {
-            todoList: TODOS,
+            todoList: [],
         };
         this.didFocusSubscription = props.navigation.addListener(
-            'didFocus',
+            'willFocus',
             payload => {
-                this.setState({
-                    todoList: TODOS,
-                })
-                console.log('ActiveScreen: ', TODOS);
+                itemsRef.on('value', (snapshot) => {
+                    let data = snapshot.val();
+                    let todoList = Object.values(data);
+                    this.setState({ todoList });
+                });
             }
         );
-
     };
+    componentWillMount() {
+        itemsRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            let todoList = Object.values(data);
+            this.setState({ todoList });
+        });
+    }
     render() {
         const { inputText, todoList } = this.state;
         return (

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { HeaderBackButton } from 'react-navigation';
 import { ImageBackground, ScrollView, StyleSheet, Text } from 'react-native';
-import { TODOS } from '../constants/Utils';
+import { db } from '../constants/db';
 import TodoItem from '../components/TodoItem';
-const FOLLOW_COLOR = 'rgb(33, 31, 110)';
-export default class TodoScreen extends Component {
+
+let itemsRef = db.ref('/TodoList');
+
+export default class CompleteScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
         headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
         title: 'Complete List',
@@ -12,19 +14,27 @@ export default class TodoScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            todoList: TODOS,
+            todoList: [],
         };
         this.didFocusSubscription = props.navigation.addListener(
-            'didFocus',
+            'willFocus',
             payload => {
-                this.setState({
-                    todoList: TODOS,
-                })
-                console.log('ComleteScreen: ', TODOS);
+                itemsRef.on('value', (snapshot) => {
+                    let data = snapshot.val();
+                    let todoList = Object.values(data);
+                    this.setState({ todoList });
+                });
             }
         );
 
     };
+    componentWillMount() {
+        itemsRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            let todoList = Object.values(data);
+            this.setState({ todoList });
+        });
+    }
     render() {
         const { inputText, todoList } = this.state;
         return (
